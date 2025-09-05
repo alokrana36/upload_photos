@@ -1,0 +1,104 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Tashu Cloudinary Gallery</title>
+  <style>
+    body{font-family:Segoe UI,Arial;margin:18px;background:#fff9fc}
+    h1{color:#ff4f9e}
+    .cta{background:#ff4f9e;color:#fff;padding:8px 12px;border-radius:8px;cursor:pointer}
+    input[type=file]{display:none}
+    #gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin-top:16px}
+    .tile{border-radius:10px;overflow:hidden;border:1px solid rgba(0,0,0,.06);background:#fff}
+    .tile img{width:100%;height:100%;object-fit:cover;display:block}
+    #status{margin-top:10px;color:#666}
+  </style>
+</head>
+<body>
+  <h1>💖 Tashu Gallery</h1>
+
+  <label for="uploader" class="cta">＋ Upload</label>
+  <input id="uploader" type="file" accept="image/*" />
+
+  <div id="status">Loading images…</div>
+  <div id="gallery"></div>
+
+  <script>
+    // === Your Cloudinary details (filled) ===
+    const CLOUD_NAME = 'dkmk0hsfk';
+    const UPLOAD_PRESET = 'unsigned_gallery';
+    const FOLDER = 'gallery'; // optional
+
+    const uploader = document.getElementById('uploader');
+    const galleryEl = document.getElementById('gallery');
+    const statusEl = document.getElementById('status');
+
+    function showStatus(s){ statusEl.textContent = s; }
+
+    function addImage(url){
+      const d = document.createElement('div');
+      d.className = 'tile';
+      const img = document.createElement('img');
+      img.src = url;
+      d.appendChild(img);
+      galleryEl.insertBefore(d, galleryEl.firstChild);
+    }
+
+    async function fetchImages(){
+      try {
+        showStatus('Loading images...');
+        const res = await fetch('/.netlify/functions/list-images');
+        if (!res.ok) {
+          const txt = await res.text();
+          showStatus('Failed to load images');
+          console.error(txt);
+          return;
+        }
+        const json = await res.json();
+        galleryEl.innerHTML = '';
+        (json.images || []).forEach(img => {
+          const url = img.secure_url.replace('/upload/', '/upload/q_auto,f_auto,w_800/');
+          addImage(url);
+        });
+        showStatus('Loaded ' + (json.images || []).length + ' images.');
+      } catch (err) {
+        console.error(err);
+        showStatus('Error loading images');
+      }
+    }
+
+    uploader.addEventListener('change', async (e) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      if (!file.type.startsWith('image/')) { alert('Select an image file'); return; }
+      if (file.size > 12 * 1024 * 1024) { alert('Max 12 MB'); return; }
+
+      try {
+        showStatus('Uploading to Cloudinary...');
+        const form = new FormData();
+        form.append('file', file);
+        form.append('upload_preset', UPLOAD_PRESET);
+        if (FOLDER) form.append('folder', FOLDER);
+
+        const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/auto/upload`, {
+          method: 'POST', body: form
+        });
+        if (!res.ok) throw new Error('Upload failed');
+        const data = await res.json();
+        showStatus('Upload complete. Refreshing gallery...');
+        await fetchImages();
+      } catch (err) {
+        console.error(err);
+        showStatus('Upload failed. Check cloud name & preset.');
+        alert('Upload failed: ' + (err.message || err));
+      } finally {
+        uploader.value = '';
+      }
+    });
+
+    // load on start
+    fetchImages();
+  </script>
+</body>
+</html>

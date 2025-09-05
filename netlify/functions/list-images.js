@@ -1,11 +1,10 @@
 // netlify/functions/list-images.js
-const fetch = (...args) => import('node-fetch').then(({default: f}) => f(...args));
 
 exports.handler = async function(event) {
   const CLOUD_NAME = process.env.CLOUDINARY_CLOUD_NAME;
   const API_KEY = process.env.CLOUDINARY_API_KEY;
   const API_SECRET = process.env.CLOUDINARY_API_SECRET;
-  const FOLDER = process.env.CLOUDINARY_FOLDER || ''; // set 'gallery' if used
+  const FOLDER = process.env.CLOUDINARY_FOLDER || '';
 
   if (!CLOUD_NAME || !API_KEY || !API_SECRET) {
     return {
@@ -19,6 +18,7 @@ exports.handler = async function(event) {
     const max_results = 500;
     const url = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/resources/image?max_results=${max_results}${prefixParam}`;
 
+    // ✅ Native fetch (Node 18+ has fetch built-in)
     const auth = Buffer.from(`${API_KEY}:${API_SECRET}`).toString('base64');
 
     const res = await fetch(url, {
@@ -40,7 +40,8 @@ exports.handler = async function(event) {
       created_at: r.created_at
     }));
 
-    items.sort((a,b) => new Date(b.created_at) - new Date(a.created_at));
+    // Sort newest first
+    items.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
     return {
       statusCode: 200,

@@ -1,257 +1,222 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Tashu Cloudinary Gallery — Blue Remix</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cloudinary Image Gallery</title>
+    <script
+        src="https://upload-widget.cloudinary.com/latest/global/all.js"
+        type="text/javascript">
+    </script>
 
-  <style>
-    :root{
-      --blue1:#e6f6ff;
-      --blue2:#ccf0ff;
-      --accent:#3aa0ff;
-      --soft:#bfe9ff;
-      --panel:#0b0b0d;
-      --card-radius:12px;
-      --gutter:14px;
-      --shadow: 0 18px 40px rgba(10,20,30,.42);
-      --muted:#9bb7d8;
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:18px;
-      font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
-      background: radial-gradient(600px 200px at 10% 0%, rgba(58,160,255,.06), transparent 20%),
-                  linear-gradient(180deg,var(--blue1),var(--blue2));
-      color:#062134;
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
-    }
+    <style>
+        body {
+            background: #1a1a1a;
+            color: white;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
 
-    header{
-      display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px;
-    }
-    .brand{
-      display:flex;align-items:center;gap:12px;
-    }
-    .logo{
-      width:54px;height:54px;border-radius:14px;
-      background:linear-gradient(135deg,var(--accent),#7fd1ff);
-      display:grid;place-items:center;color:#fff;font-weight:900;font-size:18px;box-shadow:var(--shadow);
-    }
-    h1{margin:0;font-size:20px;color:#024;letter-spacing:.2px}
-    p.lead{margin:0;color:var(--muted);font-size:13px}
+        .gallery-layout {
+            width: 90%;
+            margin: 20px auto;
+        }
 
-    .controls{display:flex;gap:10px;align-items:center}
-    .btn{
-      display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:999px;border:0;cursor:pointer;font-weight:700;
-      background:linear-gradient(90deg,var(--accent),#6ecbff);color:#021831;box-shadow: 0 10px 30px rgba(10,150,255,.12);
-    }
-    input[type=file]{display:none}
+        .gallery-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
 
-    .stage{
-      background: linear-gradient(180deg,#07070a,#0e1220 80%);
-      border-radius:18px;
-      padding:20px;
-      margin-top:18px;
-      box-shadow: 0 28px 80px rgba(4,10,20,.6);
-      border: 1px solid rgba(255,255,255,.03);
-    }
-    .stage-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;color:var(--muted)}
-    .stage-title{color:#e6f7ff;font-weight:800;letter-spacing:.6px}
+        .upload-btn {
+            padding: 10px 20px;
+            background: #3498db;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 6px;
+            color: white;
+            transition: 0.3s;
+        }
 
-    #gallery{
-      display:grid;
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-      gap:var(--gutter);
-    }
+        .upload-btn:hover {
+            background: #2980b9;
+        }
 
-    .tile{
-      position:relative;
-      border-radius:var(--card-radius);
-      overflow:hidden;
-      background:linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.01));
-      border:1px solid rgba(255,255,255,.03);
-      min-height:130px;
-      display:block;
-      transform-origin:center;
-      box-shadow: 0 10px 30px rgba(0,0,0,.45);
-      transition: transform .28s cubic-bezier(.2,.9,.2,1), box-shadow .2s;
-      will-change: transform, opacity;
-    }
+        .image-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+        }
 
-    .tile:hover{ transform: translateY(-6px) scale(1.02); box-shadow: 0 32px 60px rgba(0,0,0,.6); }
+        .image-container .image-item {
+            position: relative;
+            cursor: pointer;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
 
-    .tile img{
-      width:100%; height:100%; object-fit:cover; display:block; min-height:110px;
-      transition: transform .45s ease;
-      transform-origin:center;
-    }
-    .tile:hover img{ transform: scale(1.05); }
+        .image-container .image-item:hover {
+            transform: scale(1.03);
+        }
 
-    .delete-btn{
-      position:absolute; right:10px; top:10px; z-index:6;
-      width:40px;height:40px;border-radius:50%;border:0;background:#000;color:#fff;
-      display:grid;place-items:center;font-weight:900;cursor:pointer;box-shadow: 0 10px 30px rgba(0,0,0,.55);
-      transition: transform .18s ease, opacity .12s;
-      opacity:.96;
-    }
-    .delete-btn:hover{ transform: scale(1.06) rotate(-6deg); }
-    .delete-btn:active{ transform: scale(.98) rotate(-2deg); }
+        .image-container img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
 
-    .pop-in{
-      animation: popIn .56s cubic-bezier(.2,.9,.2,1) both;
-    }
-    @keyframes popIn{
-      0%{ opacity:0; transform: translateY(22px) scale(.8) rotate(-2deg); filter: blur(6px); }
-      60%{ opacity:1; transform: translateY(-6px) scale(1.03) rotate(1deg); filter: blur(0); }
-      100%{ transform: translateY(0) scale(1) rotate(0); }
-    }
+        .delete-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: red;
+            padding: 6px;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            font-size: 16px;
+            cursor: pointer;
+            color: white;
+            z-index: 10;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
 
-    /* ----------- NEW POPUP ANIMATION ----------- */
-    #popup {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,.8);
-      backdrop-filter: blur(6px);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 9999;
-    }
+        .image-item:hover .delete-btn {
+            opacity: 1;
+        }
 
-    #popup img {
-      max-width: 90vw;
-      max-height: 85vh;
-      border-radius: 14px;
-      box-shadow: 0 20px 60px rgba(0,0,0,.6);
-      animation: zoomIn .45s ease forwards;
-    }
+        /* POPUP STYLING + ANIMATION */
+        .popup-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+            animation: fadeIn 0.4s ease forwards;
+        }
 
-    @keyframes zoomIn {
-      0% { transform: scale(.4) rotate(-6deg); opacity: 0; }
-      60% { transform: scale(1.05) rotate(3deg); opacity: 1; }
-      100% { transform: scale(1) rotate(0); }
-    }
+        .popup-box {
+            background: #222;
+            padding: 15px;
+            border-radius: 10px;
+            animation: scaleUp 0.4s ease forwards;
+        }
 
-    /* -------------------------------------------- */
+        .popup-img {
+            max-width: 90vw;
+            max-height: 80vh;
+            border-radius: 10px;
+        }
 
-    #status{margin-top:12px;color:var(--muted);font-size:13px}
-  </style>
+        .popup-close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 50px;
+            color: white;
+            cursor: pointer;
+        }
+
+        /* ANIMATIONS */
+        @keyframes scaleUp {
+            0% { transform: scale(0.3); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        @keyframes deleteFadeOut {
+            0% { opacity: 1; transform: scale(1); }
+            100% { opacity: 0; transform: scale(0.5); }
+        }
+    </style>
 </head>
 
 <body>
-  <header>
-    <div class="brand">
-      <div class="logo">A</div>
-      <div>
-        <h1>💙 ALOK'S BLUE GALLERY</h1>
-        <p class="lead">Upload photos — they’ll land on the black stage with animations.</p>
-      </div>
+    <div class="gallery-layout">
+        <div class="gallery-header">
+            <h2>📸 Cloudinary Image Gallery</h2>
+            <button class="upload-btn" id="upload-widget">+ Upload Image</button>
+        </div>
+
+        <div class="image-container" id="uploaded-images"></div>
     </div>
 
-    <div class="controls">
-      <label for="uploader" class="btn">＋ Upload</label>
-      <input id="uploader" type="file" accept="image/*" />
-      <button id="refresh" class="btn">Refresh</button>
-    </div>
-  </header>
-
-  <main class="stage">
-    <div class="stage-head">
-      <div class="stage-title">Photos</div>
-      <div id="count">—</div>
+    <!-- Popup -->
+    <div class="popup-container" id="popup">
+        <span class="popup-close" onclick="closePopup()">×</span>
+        <div class="popup-box">
+            <img id="popup-img" class="popup-img" src="" />
+        </div>
     </div>
 
-    <div id="gallery"></div>
-    <div id="status">Loading images…</div>
-  </main>
+    <script>
+        const cloudName = "dcr3dfgik";
+        const unsignedUploadPreset = "ml_default";
 
-  <!-- ✅ POPUP BIG VIEW -->
-  <div id="popup" onclick="closePopup()">
-    <img id="popup-img" src="" alt="preview">
-  </div>
+        // ✅ Create Cloudinary Upload Widget
+        const myWidget = cloudinary.createUploadWidget(
+            {
+                cloudName: cloudName,
+                uploadPreset: unsignedUploadPreset
+            },
+            (error, result) => {
+                if (!error && result && result.event === "success") {
+                    console.log("Image uploaded:", result.info.secure_url);
+                    displayImage(result.info.secure_url);
+                }
+            }
+        );
 
-  <script>
-    const CLOUD_NAME = 'dkmk0hsfk';
-    const UPLOAD_PRESET = 'unsigned_gallery';
-    const FOLDER = 'gallery';
+        document.getElementById("upload-widget").onclick = function () {
+            myWidget.open();
+        };
 
-    const uploader = document.getElementById('uploader');
-    const galleryEl = document.getElementById('gallery');
-    const statusEl = document.getElementById('status');
-    const countEl = document.getElementById('count');
-    const refreshBtn = document.getElementById('refresh');
+        function displayImage(url) {
+            const imageContainer = document.getElementById("uploaded-images");
 
-    function setStatus(s){ statusEl.textContent = s; }
-    function setCount(n){ countEl.textContent = n + ' photos'; }
+            const imageItem = document.createElement("div");
+            imageItem.className = "image-item";
 
-    function showPopup(src){
-      document.getElementById('popup-img').src = src;
-      document.getElementById('popup').style.display = 'flex';
-    }
+            imageItem.innerHTML = `
+                <button class="delete-btn">×</button>
+                <img src="${url}" onclick="openPopup('${url}')">
+            `;
 
-    function closePopup(){
-      document.getElementById('popup').style.display = 'none';
-    }
+            imageContainer.appendChild(imageItem);
 
-    function createTile(imgObj, animate = false){
-      const d = document.createElement('div');
-      d.className = 'tile';
-      d.dataset.publicId = imgObj.public_id || '';
+            // ✅ Delete Animation
+            imageItem.querySelector(".delete-btn").onclick = function (e) {
+                e.stopPropagation();
+                imageItem.style.animation = "deleteFadeOut 0.4s ease forwards";
+                setTimeout(() => imageItem.remove(), 400);
+            };
+        }
 
-      const src = (imgObj.secure_url || imgObj.url || '')
-                  .replace('/upload/', '/upload/q_auto,f_auto,w_1100,h_900,c_fill/');
+        function openPopup(url) {
+            const popup = document.getElementById("popup");
+            document.getElementById("popup-img").src = url;
+            popup.style.display = "flex";
+        }
 
-      const img = document.createElement('img');
-      img.src = src;
-      d.appendChild(img);
+        function closePopup() {
+            document.getElementById("popup").style.display = "none";
+        }
+    </script>
 
-      // ✅ CLICK to open big popup
-      d.addEventListener('click', () => {
-        showPopup(src);
-      });
-
-      const btn = document.createElement('button');
-      btn.className = 'delete-btn';
-      btn.innerHTML = '🗑';
-      d.appendChild(btn);
-
-      return d;
-    }
-
-    async function fetchImages(){
-      setStatus('Loading images…');
-      const res = await fetch('/.netlify/functions/list-images');
-      const json = await res.json();
-
-      galleryEl.innerHTML = '';
-      const items = json.images || json.resources || [];
-      items.forEach(item => galleryEl.appendChild(createTile(item)));
-
-      setCount(items.length);
-      setStatus('Loaded');
-    }
-
-    uploader.addEventListener('change', async (e)=>{
-      const file = e.target.files?.[0];
-      const form = new FormData();
-      form.append('file', file);
-      form.append('upload_preset', UPLOAD_PRESET);
-      form.append('folder', FOLDER);
-
-      const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/auto/upload`, {
-        method: 'POST', body: form
-      });
-      const data = await res.json();
-
-      galleryEl.insertBefore(createTile(data,true), galleryEl.firstChild);
-      setCount(parseInt(countEl.textContent)+1);
-      setStatus('Upload complete');
-    });
-
-    refreshBtn.addEventListener('click', fetchImages);
-    fetchImages();
-  </script>
 </body>
 </html>

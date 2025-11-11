@@ -24,28 +24,22 @@
       background: radial-gradient(600px 200px at 10% 0%, rgba(58,160,255,.06), transparent 20%),
                   linear-gradient(180deg,var(--blue1),var(--blue2));
       color:#062134;
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
     }
 
-    header{
-      display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px;
-    }
-    .brand{
-      display:flex;align-items:center;gap:12px;
-    }
+    header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px;}
+    .brand{display:flex;align-items:center;gap:12px;}
     .logo{
       width:54px;height:54px;border-radius:14px;
       background:linear-gradient(135deg,var(--accent),#7fd1ff);
       display:grid;place-items:center;color:#fff;font-weight:900;font-size:18px;box-shadow:var(--shadow);
     }
-    h1{margin:0;font-size:20px;color:#024;letter-spacing:.2px}
+    h1{margin:0;font-size:20px;color:#024;}
     p.lead{margin:0;color:var(--muted);font-size:13px}
 
     .controls{display:flex;gap:10px;align-items:center}
     .btn{
       display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:999px;border:0;cursor:pointer;font-weight:700;
-      background:linear-gradient(90deg,var(--accent),#6ecbff);color:#021831;box-shadow: 0 10px 30px rgba(10,150,255,.12);
+      background:linear-gradient(90deg,var(--accent),#6ecbff);color:#021831;
     }
     input[type=file]{display:none}
 
@@ -58,7 +52,7 @@
       border: 1px solid rgba(255,255,255,.03);
     }
     .stage-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;color:var(--muted)}
-    .stage-title{color:#e6f7ff;font-weight:800;letter-spacing:.6px}
+    .stage-title{color:#e6f7ff;font-weight:800;}
 
     #gallery{
       display:grid;
@@ -70,36 +64,28 @@
       position:relative;
       border-radius:var(--card-radius);
       overflow:hidden;
-      background:linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.01));
-      border:1px solid rgba(255,255,255,.03);
       min-height:130px;
-      display:block;
-      transform-origin:center;
+      background:rgba(255,255,255,.02);
+      border:1px solid rgba(255,255,255,.03);
       box-shadow: 0 10px 30px rgba(0,0,0,.45);
-      transition: transform .28s cubic-bezier(.2,.9,.2,1), box-shadow .2s;
-      will-change: transform, opacity;
+      transition:.28s;
     }
 
-    .tile:hover{ transform: translateY(-6px) scale(1.02); box-shadow: 0 32px 60px rgba(0,0,0,.6); }
+    .tile:hover{ transform: translateY(-6px) scale(1.02); }
 
     .tile img{
-      width:100%; height:100%; object-fit:cover; display:block; min-height:110px;
+      width:100%; height:100%; object-fit:cover;
       transition: transform .45s ease;
-      transform-origin:center;
     }
     .tile:hover img{ transform: scale(1.05); }
 
     .delete-btn{
-      position:absolute; right:10px; top:10px; z-index:6;
-      width:40px;height:40px;border-radius:50%;border:0;background:#000;color:#fff;
-      display:grid;place-items:center;font-weight:900;cursor:pointer;box-shadow: 0 10px 30px rgba(0,0,0,.55);
-      transition: transform .18s ease, opacity .12s;
-      opacity:.96;
+      position:absolute; right:10px; top:10px;
+      width:40px;height:40px;border-radius:50%;
+      background:#000;color:#fff;display:grid;place-items:center;
+      cursor:pointer;z-index:6;
     }
-    .delete-btn:hover{ transform: scale(1.06) rotate(-6deg); }
-    .delete-btn:active{ transform: scale(.98) rotate(-2deg); }
 
-    /* Like Button */
     .like-btn{
       position:absolute;
       bottom:10px;
@@ -120,160 +106,164 @@
       font-size:18px;
     }
 
-    /* ----------- NEW POPUP ANIMATION ----------- */
     #popup {
       position: fixed;
       inset: 0;
       background: rgba(0,0,0,.8);
-      backdrop-filter: blur(6px);
       display: none;
       align-items: center;
       justify-content: center;
       z-index: 9999;
     }
     #popup img {
-      max-width: 90vw;
-      max-height: 85vh;
+      max-width: 95vw;
+      max-height: 90vh;
       border-radius: 14px;
-      box-shadow: 0 20px 60px rgba(0,0,0,.6);
       animation: zoomIn .45s ease forwards;
     }
     @keyframes zoomIn {
-      0% { transform: scale(.4) rotate(-6deg); opacity: 0; }
-      60% { transform: scale(1.05) rotate(3deg); opacity: 1; }
-      100% { transform: scale(1) rotate(0); }
+      0% { transform: scale(.4); opacity: 0; }
+      60% { transform: scale(1.05); opacity: 1; }
+      100% { transform: scale(1); }
+    }
+
+    /* ✅ Popup message for already liked */
+    #like-warning {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #ff4d4d;
+      color: white;
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 10px;
+      display: none;
+      animation: fadeIn .3s ease;
+      z-index: 10000;
+    }
+    @keyframes fadeIn {
+      from { opacity:0; transform:translateX(-50%) translateY(10px); }
+      to { opacity:1; transform:translateX(-50%) translateY(0); }
     }
   </style>
 </head>
 
 <body>
-  <header>
-    <div class="brand">
-      <div class="logo">A</div>
-      <div>
-        <h1>💙 ALOK'S BLUE GALLERY</h1>
-        <p class="lead">Upload photos — they’ll land on the black stage with animations.</p>
-      </div>
+
+<div id="like-warning">You already liked this picture!</div>
+
+<header>
+  <div class="brand">
+    <div class="logo">A</div>
+    <div>
+      <h1>💙 ALOK'S BLUE GALLERY</h1>
+      <p class="lead">Upload photos — they’ll land on the black stage with animations.</p>
     </div>
-
-    <div class="controls">
-      <label for="uploader" class="btn">＋ Upload</label>
-      <input id="uploader" type="file" accept="image/*" />
-      <button id="refresh" class="btn">Refresh</button>
-    </div>
-  </header>
-
-  <main class="stage">
-    <div class="stage-head">
-      <div class="stage-title">Photos</div>
-      <div id="count">—</div>
-    </div>
-
-    <div id="gallery"></div>
-    <div id="status">Loading images…</div>
-  </main>
-
-  <!-- ✅ POPUP BIG VIEW -->
-  <div id="popup" onclick="closePopup()">
-    <img id="popup-img" src="" alt="preview">
   </div>
 
-  <script>
-    const CLOUD_NAME = 'dkmk0hsfk';
-    const UPLOAD_PRESET = 'unsigned_gallery';
-    const FOLDER = 'gallery';
+  <div class="controls">
+    <label for="uploader" class="btn">＋ Upload</label>
+    <input id="uploader" type="file" accept="image/*" />
+    <button id="refresh" class="btn">Refresh</button>
+  </div>
+</header>
 
-    const uploader = document.getElementById('uploader');
-    const galleryEl = document.getElementById('gallery');
-    const statusEl = document.getElementById('status');
-    const countEl = document.getElementById('count');
-    const refreshBtn = document.getElementById('refresh');
+<main class="stage">
+  <div class="stage-head">
+    <div class="stage-title">Photos</div>
+    <div id="count">—</div>
+  </div>
 
-    function setStatus(s){ statusEl.textContent = s; }
-    function setCount(n){ countEl.textContent = n + ' photos'; }
+  <div id="gallery"></div>
+  <div id="status">Loading images…</div>
+</main>
 
-    function showPopup(src){
-      document.getElementById('popup-img').src = src;
-      document.getElementById('popup').style.display = 'flex';
-    }
-    function closePopup(){ document.getElementById('popup').style.display = 'none'; }
+<div id="popup" onclick="closePopup()">
+  <img id="popup-img" src="" alt="">
+</div>
 
-    function createTile(imgObj){
-      const d = document.createElement('div');
-      d.className = 'tile';
-      d.dataset.publicId = imgObj.public_id;
+<script>
+const CLOUD_NAME = 'dkmk0hsfk';
+const UPLOAD_PRESET = 'unsigned_gallery';
+const FOLDER = 'gallery';
 
-      const src = imgObj.secure_url.replace('/upload/', '/upload/q_auto,f_auto,w_1100,h_900,c_fill/');
+function showWarning() {
+  const w = document.getElementById("like-warning");
+  w.style.display = "block";
+  setTimeout(() => w.style.display = "none", 1500);
+}
 
-      const img = document.createElement('img');
-      img.src = src;
-      d.appendChild(img);
+function showPopup(src){
+  document.getElementById('popup-img').src = src;
+  document.getElementById('popup').style.display = 'flex';
+}
+function closePopup(){
+  document.getElementById('popup').style.display = 'none';
+}
 
-      // ✅ CLICK BIG VIEW
-      d.addEventListener('click', ()=> showPopup(src));
+function createTile(imgObj){
+  const d = document.createElement('div');
+  d.className = 'tile';
+  d.dataset.id = imgObj.public_id;
 
-      // ✅ DELETE BUTTON FIX
-      const del = document.createElement('button');
-      del.className = 'delete-btn';
-      del.innerHTML = '🗑';
-      del.onclick = async(e)=>{
-        e.stopPropagation();
-        await fetch('/.netlify/functions/delete-image?id=' + imgObj.public_id);
-        d.remove();
-      };
-      d.appendChild(del);
+  const src = imgObj.secure_url.replace('/upload/', '/upload/q_auto,f_auto,w_1100,h_900,c_fill/');
+  const img = document.createElement('img');
+  img.src = src;
+  d.appendChild(img);
 
-      // ✅ LIKE BUTTON
-      const like = document.createElement("span");
-      like.className = "like-btn";
-      like.innerHTML = "❤️";
+  d.addEventListener('click',()=> showPopup(src));
 
-      const likeCount = document.createElement("span");
-      likeCount.className = "like-count";
-      likeCount.textContent = "0";
+  // ✅ LIKE STORAGE LOGIC
+  const likeKey = "liked_" + imgObj.public_id;
+  const countKey = "count_" + imgObj.public_id;
 
-      let count = 0;
-      like.onclick = function(e){
-        e.stopPropagation();
-        like.classList.toggle("liked");
-        count = like.classList.contains("liked") ? count + 1 : count - 1;
-        likeCount.textContent = count;
-      };
+  let liked = localStorage.getItem(likeKey) === "true";
+  let count = parseInt(localStorage.getItem(countKey) || "0");
 
-      d.appendChild(like);
-      d.appendChild(likeCount);
+  const like = document.createElement("span");
+  like.className = "like-btn";
+  like.innerHTML = "❤️";
+  if(liked) like.classList.add("liked");
 
-      return d;
-    }
+  const likeCount = document.createElement("span");
+  likeCount.className = "like-count";
+  likeCount.textContent = count;
 
-    async function fetchImages(){
-      setStatus('Loading images…');
-      const res = await fetch('/.netlify/functions/list-images');
-      const json = await res.json();
-      galleryEl.innerHTML = '';
-      const items = json.images || json.resources || [];
-      items.forEach(item=> galleryEl.appendChild(createTile(item)));
-      setCount(items.length);
-      setStatus('Loaded');
+  like.onclick = function(e){
+    e.stopPropagation();
+
+    if(liked){
+      showWarning();
+      return;
     }
 
-    uploader.addEventListener('change', async (e)=>{
-      const file = e.target.files[0];
-      const form = new FormData();
-      form.append('file', file);
-      form.append('upload_preset', UPLOAD_PRESET);
-      form.append('folder', FOLDER);
+    liked = true;
+    count++;
 
-      const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/auto/upload`, {
-        method:'POST', body:form
-      });
-      const data = await res.json();
-      galleryEl.prepend(createTile(data));
-      setStatus('Uploaded');
-    });
+    like.classList.add("liked");
+    likeCount.textContent = count;
 
-    refreshBtn.onclick = fetchImages;
-    fetchImages();
-  </script>
+    localStorage.setItem(likeKey, "true");
+    localStorage.setItem(countKey, count);
+  };
+
+  d.appendChild(like);
+  d.appendChild(likeCount);
+
+  return d;
+}
+
+async function fetchImages(){
+  const res = await fetch('/.netlify/functions/list-images');
+  const json = await res.json();
+  document.getElementById("gallery").innerHTML = '';
+  const items = json.images || json.resources || [];
+  items.forEach(i=> document.getElementById("gallery").appendChild(createTile(i)));
+}
+
+fetchImages();
+</script>
+
 </body>
 </html>
